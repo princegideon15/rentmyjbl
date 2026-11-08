@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PartyBox Rental Agreement Builder</title>
+<script>
+(function(){
+  var t = null;
+  try { t = localStorage.getItem('rentmyjbl-theme'); } catch(e){}
+  if (t !== 'light' && t !== 'dark'){
+    t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Caveat:wght@600;700&display=swap');
@@ -16,12 +26,31 @@
     --ink-soft:#5a5a62;
     --paper:#fbf9f4;
     --paper-line:#d9d3c4;
-    --amber:#c4842c;
-    --amber-bright:#e7ab55;
+    --jbl:#ff3300;
+    --amber:#cc2900;
+    --amber-bright:#ff3300;
     --cream:#f3efe6;
     --danger:#b3462c;
     --ok:#5f7a52;
+    --field-bg:#101012;
+    --muted:#a9a9b2;
+    --line-strong:#3a3a41;
+    --topbar-end:rgba(20,20,22,0.92);
+    --scheme:dark;
   }
+  :root[data-theme="light"]{
+    --shell:#f3f1ec;
+    --shell-2:#ffffff;
+    --shell-line:#ddd8cc;
+    --cream:#1c1c1f;
+    --field-bg:#ffffff;
+    --muted:#5f5f68;
+    --line-strong:#c4beb0;
+    --topbar-end:rgba(243,241,236,0.92);
+    --amber-bright:#d92b00;
+    --scheme:light;
+  }
+  body, .topbar, details.section, .field input, .field textarea{transition:background-color .2s ease, color .2s ease, border-color .2s ease;}
 
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -38,8 +67,8 @@
     display:flex; align-items:center; justify-content:space-between;
     gap:16px;
     padding:16px 24px;
-    background:linear-gradient(180deg, var(--shell) 60%, rgba(20,20,22,0.92));
-    border-bottom:1px solid var(--shell-line);
+    background:linear-gradient(180deg, var(--shell) 60%, var(--topbar-end));
+    border-bottom:2px solid var(--jbl);
     backdrop-filter:blur(6px);
   }
   .brand{display:flex; flex-direction:column; gap:2px;}
@@ -59,8 +88,8 @@
   }
   .btn:active{transform:translateY(1px);}
   .btn-primary{
-    background:var(--amber-bright); color:#20140a;
-    box-shadow:0 6px 18px -8px rgba(231,171,85,0.7);
+    background:var(--jbl); color:#fff;
+    box-shadow:0 6px 18px -8px rgba(255,51,0,0.75);
   }
   .btn-primary:hover{filter:brightness(1.06);}
   .btn-ghost{
@@ -104,7 +133,7 @@
     background:var(--shell-2);
     overflow:hidden;
   }
-  details.section[open]{border-color:#3a3a41;}
+  details.section[open]{border-color:var(--line-strong);}
   details.section summary{
     list-style:none;
     cursor:pointer;
@@ -125,7 +154,7 @@
 
   .field{margin-bottom:12px;}
   .field label{
-    display:block; font-size:12.5px; color:#a9a9b2; margin-bottom:5px;
+    display:block; font-size:12.5px; color:var(--muted); margin-bottom:5px;
   }
   .field input[type=text],
   .field input[type=tel],
@@ -134,14 +163,14 @@
   .field input[type=datetime-local],
   .field textarea{
     width:100%;
-    background:#101012;
+    background:var(--field-bg);
     border:1px solid var(--shell-line);
     border-radius:7px;
     padding:9px 10px;
     color:var(--cream);
     font-family:'Space Grotesk', sans-serif;
     font-size:14px;
-    color-scheme: dark;
+    color-scheme: var(--scheme);
   }
   .field textarea{resize:vertical; min-height:56px; font-family:'Space Grotesk', sans-serif;}
   .field input:focus, .field textarea:focus{
@@ -163,13 +192,13 @@
     border:1px solid var(--shell-line); border-radius:7px;
     padding:9px 10px; cursor:pointer; font-size:13.5px;
   }
-  .rate-opt:has(input:checked){border-color:var(--amber-bright); background:rgba(231,171,85,0.08);}
+  .rate-opt:has(input:checked){border-color:var(--amber-bright); background:rgba(255,51,0,0.10);}
   .rate-opt input{accent-color:var(--amber-bright);}
   .rate-opt .amt{margin-left:auto; color:var(--amber-bright); font-weight:600;}
 
   .static-note{
-    font-size:12.5px; color:#a9a9b2; line-height:1.55;
-    background:#101012; border:1px solid var(--shell-line); border-radius:7px;
+    font-size:12.5px; color:var(--muted); line-height:1.55;
+    background:var(--field-bg); border:1px solid var(--shell-line); border-radius:7px;
     padding:10px 11px; margin-bottom:12px;
   }
 
@@ -178,7 +207,7 @@
     padding-top:10px;
   }
   .total-line.main{border-top:1px solid var(--shell-line); margin-top:12px; padding-top:12px;}
-  .total-line span:first-child{font-size:13px; color:#a9a9b2;}
+  .total-line span:first-child{font-size:13px; color:var(--muted);}
   .total-line span:last-child{font-size:16px; font-weight:700; color:var(--cream);}
   .total-line.main span:last-child{font-size:20px; color:var(--amber-bright);}
   .total-line.split span:last-child{color:var(--amber-bright); font-size:15px;}
@@ -194,7 +223,7 @@
     cursor:zoom-in; display:block;
   }
   .qr-dl{display:inline-block; margin-top:6px; text-decoration:none;}
-  .qr-cell span{display:block; font-size:11px; color:#a9a9b2; margin-top:5px;}
+  .qr-cell span{display:block; font-size:11px; color:var(--muted); margin-top:5px;}
 
   .qr-grid-preview{
     display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px; max-width:420px;
@@ -216,7 +245,7 @@
     background:#f4f0e6; border-radius:6px; border:1px solid var(--shell-line);
     cursor:zoom-in;
   }
-  .cond-thumb span{display:block; font-size:10px; color:#a9a9b2; margin-top:4px; line-height:1.3;}
+  .cond-thumb span{display:block; font-size:10px; color:var(--muted); margin-top:4px; line-height:1.3;}
 
   .cond-grid-preview{
     display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:10px;
@@ -231,18 +260,18 @@
   /* ---------- ID upload thumbnails ---------- */
   .field input[type=file]{
     width:100%;
-    background:#101012;
+    background:var(--field-bg);
     border:1px solid var(--shell-line);
     border-radius:7px;
     padding:8px 9px;
-    color:#a9a9b2;
+    color:var(--muted);
     font-family:'Space Grotesk', sans-serif;
     font-size:12.5px;
   }
   .upload-thumb{margin-top:8px;}
   .upload-thumb img{
     display:block; width:100%; max-width:180px; aspect-ratio:1/1; object-fit:contain;
-    background:#101012; border-radius:6px; border:1px solid var(--shell-line);
+    background:var(--field-bg); border-radius:6px; border:1px solid var(--shell-line);
     cursor:zoom-in;
   }
 
@@ -284,7 +313,7 @@
     padding:28px 30px 60px;
     display:flex; justify-content:center;
     background:
-      radial-gradient(ellipse 900px 400px at 50% -10%, rgba(231,171,85,0.10), transparent 60%),
+      radial-gradient(ellipse 900px 400px at 50% -10%, rgba(255,51,0,0.14), transparent 60%),
       var(--shell);
   }
   #document{
@@ -293,6 +322,7 @@
     color:var(--ink);
     font-family:'Source Serif 4', serif;
     padding:52px 54px;
+    border-top:8px solid var(--jbl);
     border-radius:2px;
     box-shadow:0 30px 60px -25px rgba(0,0,0,0.65);
     line-height:1.5;
@@ -314,7 +344,7 @@
   #document .fill.empty{color:#b9b2a0;}
   #document h2.sec{
     font-size:14.5px; font-weight:700; margin:24px 0 8px;
-    border-bottom:1px solid var(--paper-line); padding-bottom:5px;
+    border-bottom:2px solid var(--jbl); padding-bottom:5px;
   }
   #document p{margin:8px 0; font-size:13.8px;}
   #document ul{margin:8px 0; padding-left:20px; font-size:13.8px;}
@@ -322,7 +352,7 @@
   #document table.pay{width:100%; border-collapse:collapse; font-size:13.8px; margin-top:6px;}
   #document table.pay td{padding:5px 0; border-bottom:1px dotted var(--paper-line);}
   #document table.pay td.amt{text-align:right; font-variant-numeric:tabular-nums;}
-  #document table.pay tr.subtotal td{font-weight:700; border-bottom:1px solid var(--ink); padding-top:8px;}
+  #document table.pay tr.subtotal td{font-weight:700; border-bottom:1px solid var(--jbl); padding-top:8px;}
   #document table.pay tr.split td{font-style:italic; color:var(--ink-soft);}
   .sig-block{display:grid; grid-template-columns:1fr; max-width:280px; margin-top:22px;}
   .sig-box .role{font-size:12px; letter-spacing:0.02em; color:var(--ink-soft); margin-bottom:10px;}
@@ -350,7 +380,7 @@
   }
   .sigpad-foot{
     display:flex; align-items:center; justify-content:space-between;
-    background:#101012; padding:6px 8px;
+    background:var(--field-bg); padding:6px 8px;
     border-top:1px solid var(--shell-line);
   }
   .sigpad-foot .sigpad-status{font-size:11.5px; color:var(--ink-soft);}
@@ -358,7 +388,53 @@
   .page-break{page-break-before:always;}
 
   .footer-note{
-    text-align:center; padding:20px; font-size:12px; color:#77777f;
+    text-align:center; padding:20px; font-size:12px; color:var(--muted);
+  }
+
+  /* ---------- Notices ---------- */
+  .notice{
+    display:flex; align-items:flex-start; gap:10px;
+    padding:11px 14px; border-radius:8px;
+    font-size:12.5px; line-height:1.55; color:var(--cream);
+    background:rgba(255,51,0,0.10); border:1px solid rgba(255,51,0,0.45);
+  }
+  .notice .notice-icon{
+    flex:none; width:20px; height:20px; border-radius:50%;
+    background:var(--jbl); color:#fff; font-weight:700; font-size:12px;
+    display:flex; align-items:center; justify-content:center; margin-top:1px;
+  }
+  .notice b{color:var(--cream);}
+  .notice-browser{margin:14px 24px 0;}
+  .notice-browser .notice-text{flex:1; min-width:0;}
+  .notice-read{margin-bottom:14px;}
+  .notice-sign{margin:0 0 12px;}
+  .btn-share{
+    background:transparent; color:var(--jbl);
+    border:1.5px solid var(--jbl);
+  }
+  .btn-share:hover{background:var(--jbl); color:#fff;}
+  .btn:disabled{opacity:.6; cursor:wait;}
+  @media (max-width:640px){
+    .topbar{flex-wrap:wrap; padding:14px 16px;}
+    .top-actions{width:100%;}
+    .top-actions .btn{flex:1; padding:11px 8px;}
+    .notice-browser{margin:12px 16px 0;}
+  }
+
+  /* ---------- Theme toggle ---------- */
+  .btn-icon{
+    width:42px; height:42px; padding:0; flex:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:18px; line-height:1;
+  }
+  .theme-toggle .ico-sun{display:none;}
+  :root[data-theme="light"] .theme-toggle .ico-sun{display:inline;}
+  :root[data-theme="light"] .theme-toggle .ico-moon{display:none;}
+  @media (max-width:640px){
+    .topbar{position:sticky;}
+    .brand{padding-right:52px;}
+    .top-actions .theme-toggle{position:absolute; top:12px; right:16px; width:38px; height:38px;}
+    .top-actions .btn:not(.btn-icon){flex:1;}
   }
 </style>
 </head>
@@ -366,19 +442,31 @@
 
 <div class="topbar">
   <div class="brand">
-    <span class="kicker">EQUIPMENT RENTAL</span>
     <h1>PartyBox Encore Agreement Builder</h1>
   </div>
   <div class="top-actions">
+    <button class="btn btn-ghost btn-icon theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" title="Switch theme"><span class="ico-sun" aria-hidden="true">☀</span><span class="ico-moon" aria-hidden="true">☾</span></button>
     <button class="btn btn-ghost" id="resetBtn" type="button">Reset</button>
+    <button class="btn btn-share" id="shareBtn" type="button">Share PDF</button>
     <button class="btn btn-primary" id="downloadBtn" type="button">Download PDF</button>
   </div>
+</div>
+
+<div class="notice notice-browser" role="note">
+  <span class="notice-icon">!</span>
+  <span class="notice-text"><b>Open this page in an external browser</b> (Chrome, Safari, etc.) for best results. In-app browsers such as Messenger or Facebook may block the signature pad, uploads, and PDF download.
+  <button type="button" class="btn btn-ghost btn-small" id="copyLinkBtn" style="margin-left:6px;">Copy link</button></span>
 </div>
 
 <div class="layout">
 
   <!-- ============ FORM ============ -->
   <form class="form-panel" id="form" autocomplete="off">
+
+    <div class="notice notice-read" role="note">
+      <span class="notice-icon">i</span>
+      <span><b>Please read the agreement carefully</b> in the preview before you sign. By signing, you accept all of its terms.</span>
+    </div>
 
     <details class="section" open>
       <summary><span class="num">01</span>Parties &amp; Schedule</summary>
@@ -557,6 +645,10 @@
       <summary><span class="num">07</span>Signature</summary>
       <div class="section-body">
         <div class="field">
+          <div class="notice notice-sign" role="note">
+            <span class="notice-icon">!</span>
+            <span>Make sure you have <b>read the agreement carefully</b> before signing.</span>
+          </div>
           <label>Renter signature &mdash; draw below</label>
           <div class="sigpad-wrap">
             <canvas id="renterSigCanvas"></canvas>
@@ -1058,6 +1150,119 @@
       alert('Could not generate the PDF. Please try again.');
     });
   });
+
+
+  /* ---------- Copy link (external-browser note) ---------- */
+  (function(){
+    var b = $('copyLinkBtn');
+    if (!b) return;
+    b.addEventListener('click', function(){
+      var url = location.href;
+      function done(){ b.textContent = 'Copied!'; setTimeout(function(){ b.textContent = 'Copy link'; }, 1800); }
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(url).then(done, function(){ window.prompt('Copy this link:', url); });
+      } else {
+        window.prompt('Copy this link:', url);
+      }
+    });
+  })();
+
+  /* ---------- Share PDF via apps (Web Share API) ---------- */
+  (function(){
+    var shareBtn = $('shareBtn');
+    var cachedPdf = null;
+    var LABEL = 'Share PDF';
+
+    function reset(){ shareBtn.textContent = LABEL; shareBtn.disabled = false; }
+    function invalidate(){ cachedPdf = null; if (!shareBtn.disabled) shareBtn.textContent = LABEL; }
+    form.addEventListener('input', invalidate);
+    form.addEventListener('change', invalidate);
+    form.addEventListener('pointerup', invalidate);
+
+    function buildPdfFile(){
+      updateSignaturePreview();
+      var sx = window.scrollX, sy = window.scrollY;
+      window.scrollTo(0, 0);
+      var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+      return ready.then(function(){
+        return new Promise(function(r){ requestAnimationFrame(function(){ requestAnimationFrame(r); }); });
+      }).then(function(){
+        return html2pdf().set(pdfOptions()).from($('document')).outputPdf('blob');
+      }).then(function(blob){
+        window.scrollTo(sx, sy);
+        return new File([blob], pdfFilename(), { type: 'application/pdf' });
+      }, function(err){
+        window.scrollTo(sx, sy);
+        throw err;
+      });
+    }
+
+    function fallbackDownload(file){
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(file);
+      a.download = file.name;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    }
+
+    function attemptShare(file){
+      var data = { files: [file], title: 'JBL PartyBox Rental Agreement', text: 'Rental agreement — please review.' };
+      if (!(navigator.share && navigator.canShare && navigator.canShare({ files: [file] }))){
+        fallbackDownload(file);
+        alert('Sharing isn\u2019t supported in this browser, so the PDF was downloaded instead. You can send it from your files or downloads.');
+        reset();
+        return;
+      }
+      navigator.share(data).then(reset, function(err){
+        if (err && err.name === 'AbortError'){ reset(); return; }           // user closed the share sheet
+        if (err && err.name === 'NotAllowedError'){                          // browser wants a fresh tap
+          shareBtn.disabled = false;
+          shareBtn.textContent = 'Tap again to share';
+          return;
+        }
+        console.error(err);
+        fallbackDownload(file);
+        alert('Could not open the share sheet, so the PDF was downloaded instead.');
+        reset();
+      });
+    }
+
+    shareBtn.addEventListener('click', function(){
+      if (!validateForm()) return;
+      if (cachedPdf){ attemptShare(cachedPdf); return; }
+      shareBtn.textContent = 'Preparing…';
+      shareBtn.disabled = true;
+      buildPdfFile().then(function(file){
+        cachedPdf = file;
+        shareBtn.disabled = false;
+        attemptShare(file);
+      }).catch(function(err){
+        console.error(err);
+        reset();
+        alert('Could not generate the PDF. Please try again.');
+      });
+    });
+  })();
+
+
+  /* ---------- Light / dark theme toggle ---------- */
+  (function(){
+    var btn = $('themeToggle');
+    var root = document.documentElement;
+    function sync(){
+      var light = root.getAttribute('data-theme') === 'light';
+      btn.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+      btn.title = light ? 'Switch to dark theme' : 'Switch to light theme';
+    }
+    btn.addEventListener('click', function(){
+      var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('rentmyjbl-theme', next); } catch(e){}
+      sync();
+    });
+    sync();
+  })();
 
   updatePreview();
 })();
