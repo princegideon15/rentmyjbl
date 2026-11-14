@@ -168,6 +168,7 @@
   }
   .field input[type=text],
   .field input[type=tel],
+  .field input[type=email],
   .field input[type=number],
   .field input[type=date],
   .field input[type=datetime-local],
@@ -858,6 +859,8 @@
   }
   .field-error::before{content:"!"; flex:none; width:16px; height:16px; margin-top:1px; border-radius:50%; background:#c0392b; color:#fff; font-size:11px; font-weight:700; display:grid; place-items:center;}
   :root[data-theme="light"] .field-error{color:#b3321f;}
+
+  .opt-tag{color:var(--muted); font-weight:400;}
 </style>
 </head>
 <body>
@@ -936,6 +939,11 @@
           <label for="contactNumber">Renter contact number</label>
           <input type="tel" id="contactNumber" required inputmode="numeric" maxlength="11" minlength="11" pattern="[0-9]{11}" placeholder="09XXXXXXXXX" title="Enter exactly 11 digits (e.g. 09171234567)">
           <div class="hint">Must be exactly 11 digits, numbers only.</div>
+        </div>
+        <div class="field">
+          <label for="renterEmail">Renter email <span class="opt-tag">(optional)</span></label>
+          <input type="email" id="renterEmail" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="name@example.com">
+          <div class="hint">If you add an email, a copy of the signed agreement will also be sent to the renter.</div>
         </div>
         <div class="field">
           <label for="deliveryAddress">Renter address</label>
@@ -1159,6 +1167,7 @@
       <p class="partyline"><b>Owner:</b> <span class="fill empty" id="p-ownerName">—</span></p>
       <p class="partyline"><b>Renter:</b> <span class="fill empty" id="p-renterName">—</span></p>
       <p class="partyline"><b>Contact Number:</b> <span class="fill empty" id="p-contactNumber">—</span></p>
+      <p class="partyline" id="p-renterEmailRow" style="display:none;"><b>Renter Email:</b> <span class="fill" id="p-renterEmail"></span></p>
       <p class="partyline"><b>Rent Duration:</b> <span class="fill empty" id="p-rentDuration">—</span></p>
       <p class="partyline"><b>Renter Address:</b> <span class="fill empty" id="p-deliveryAddress">—</span></p>
       <p style="font-size:12px; color:var(--ink-soft); margin:2px 0 4px;">Additional charges may apply if this address is outside Biñan City.</p>
@@ -1494,6 +1503,11 @@
     fillOrDash('p-ownerName', $('ownerName').value);
     fillOrDash('p-renterName', $('renterName').value);
     fillOrDash('p-contactNumber', $('contactNumber').value);
+    (function(){
+      const em = $('renterEmail').value.trim();
+      $('p-renterEmailRow').style.display = em ? '' : 'none';
+      $('p-renterEmail').textContent = em;
+    })();
     const startDate = $('rentalDate').value;
     const endDate = $('returnDate').value;
     let durationText = '';
@@ -1566,8 +1580,8 @@
      EMAIL SETUP  —  paste your Google Apps Script Web App URL below
      (it ends with /exec). TOKEN must match the TOKEN in your script.
   =================================================================== */
-  const APPS_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbybCsypht6tCWVTWscgobC-Fzb7NskDHF1qpKqoACaLvaqNp9I3C0lOKFpTAsBZzXbUSw/exec';
-  const APPS_SCRIPT_TOKEN = '10151991gpDB!?';
+  const APPS_SCRIPT_URL   = '';
+  const APPS_SCRIPT_TOKEN = 'change-me-to-a-secret';
 
 
   /* ---------- Contact number: digits only, exactly 11 ---------- */
@@ -1738,6 +1752,7 @@
       if (el.validity.valueMissing) return 'Please pick a date.';
       if (el.validity.rangeUnderflow) return 'Start date can\u2019t be earlier than today.';
     }
+    if (el.type === 'email' && el.validity.typeMismatch) return 'Please enter a valid email address, e.g. name@example.com.';
     if (el.type === 'file' && el.validity.valueMissing) return 'Please upload a photo.';
     if (el.type === 'checkbox' && el.validity.valueMissing) return 'Please tick this box to continue.';
     return el.validationMessage || 'Please complete this field.';
@@ -1998,10 +2013,12 @@
       setStatus('info', 'Sending to email… this can take a few seconds.');
       const payload = {
         token: APPS_SCRIPT_TOKEN,
+        renterEmail: $('renterEmail').value.trim(),
         filename: pdfFilename(),
         pdfBase64: b64,
         data: {
           renterName: $('renterName').value,
+          renterEmail: $('renterEmail').value.trim(),
           contactNumber: $('contactNumber').value,
           address: $('deliveryAddress').value,
           rentDuration: $('p-rentDuration').textContent,
@@ -2024,7 +2041,10 @@
       return r.json();
     }).then(function(res){
       if (!res || !res.ok) throw new Error((res && res.error) || 'Unknown error');
-      setStatus('ok', 'Sent! The signed agreement was emailed to the owner.');
+      const wantsRenter = !!$('renterEmail').value.trim();
+      if (!wantsRenter) setStatus('ok', 'Sent! The signed agreement was emailed to the owner.');
+      else if (res.renterSent) setStatus('ok', 'Sent! The signed agreement was emailed to the owner, and a copy went to ' + $('renterEmail').value.trim() + '.');
+      else setStatus('error', 'The owner copy was sent, but the renter copy could not be confirmed' + (res.renterError ? ' (' + res.renterError + ')' : '') + '. Please check the renter\u2019s email address or send the PDF to them directly.');
     }).catch(function(err){
       console.error(err);
       setStatus('error', 'Could not send the email (' + (err && err.message ? err.message : 'network error') + '). Please check your connection and try again, or use Download PDF / Share PDF instead.');
