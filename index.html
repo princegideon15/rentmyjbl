@@ -861,6 +861,26 @@
   :root[data-theme="light"] .field-error{color:#b3321f;}
 
   .opt-tag{color:var(--muted); font-weight:400;}
+
+  /* ---------- Data privacy notice ---------- */
+  .privacy-card{
+    display:flex; gap:12px; align-items:flex-start; margin-bottom:16px;
+    padding:13px 14px; border-radius:14px;
+    background:rgba(95,122,82,.14); border:1px solid rgba(95,122,82,.55);
+    color:var(--cream); font-size:13px; line-height:1.55;
+  }
+  .privacy-ico{flex:none; margin-top:1px; color:#7fa56d;}
+  :root[data-theme="light"] .privacy-ico{color:#4d7340;}
+  .privacy-body{min-width:0;}
+  .privacy-body > b{display:block; font-size:14px; margin-bottom:3px;}
+  .privacy-body p{margin:0;}
+  .privacy-more{margin-top:8px;}
+  .privacy-more summary{cursor:pointer; font-weight:600; color:var(--amber-bright); font-size:12.5px; list-style:none; display:inline-flex; align-items:center; gap:6px;}
+  .privacy-more summary::-webkit-details-marker{display:none;}
+  .privacy-more summary::after{content:"+"; font-size:15px; line-height:1;}
+  .privacy-more[open] summary::after{content:"–";}
+  .privacy-more ul{margin:8px 0 6px; padding-left:18px;}
+  .privacy-more li{margin:3px 0;}
 </style>
 </head>
 <body>
@@ -927,6 +947,23 @@
 <section class="step" data-title="Parties &amp; Schedule">
   <div class="step-head"><span class="step-num">01</span><h2>Parties &amp; Schedule</h2></div>
   <div class="section-body">
+        <div class="privacy-card" role="note">
+          <svg class="privacy-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.5 3.1 8.2 7.5 9.5 4.4-1.3 7.5-5 7.5-9.5V6L12 3z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg>
+          <div class="privacy-body">
+            <b>Data Privacy Notice</b>
+            <p>Your personal information is used by the Owner <b>only for this rental agreement</b>. It is <b>not stored anywhere</b> on this page or any database. It is only received by the Owner through <b>email or Messenger</b> when you send the agreement. You keep <b>all your rights</b> under the Data Privacy Act of 2012 (RA 10173).</p>
+            <details class="privacy-more">
+              <summary>See your rights</summary>
+              <ul>
+                <li>Be informed about how your data is used.</li>
+                <li>Access and correct your information.</li>
+                <li>Object to its use, or ask for it to be erased or blocked.</li>
+                <li>File a complaint with the National Privacy Commission.</li>
+              </ul>
+              <p>To exercise any of these rights, contact the Owner directly.</p>
+            </details>
+          </div>
+        </div>
         <div class="field">
           <label for="ownerName">Owner name</label>
           <input type="text" id="ownerName" required readonly placeholder="e.g. Maria Santos" value="Gerard Balde">
@@ -1268,7 +1305,10 @@
         </div>
       </div>
 
-      <h2 class="sec">10. Agreement</h2>
+      <h2 class="sec">10. Data Privacy Notice</h2>
+      <p>The Renter’s personal information (including name, contact details, address, ID, photos, and signature) is collected and used by the Owner only for the purposes of this rental agreement. It is not stored on any website or database and is only received by the Owner through email or Messenger. The Renter retains all rights as a data subject under the Data Privacy Act of 2012 (RA 10173), including the rights to be informed, to access and correct, to object, and to request erasure or blocking of their personal data.</p>
+
+      <h2 class="sec">11. Agreement</h2>
       <p>By signing below, the Renter confirms the information above is accurate, the equipment was received in good working condition except as noted, and accepts the rental period, fees, pick-up/courier arrangement, and damage/loss provisions stated in this agreement.</p>
 
       <div class="sig-block">
@@ -1580,8 +1620,8 @@
      EMAIL SETUP  —  paste your Google Apps Script Web App URL below
      (it ends with /exec). TOKEN must match the TOKEN in your script.
   =================================================================== */
-  const APPS_SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbybCsypht6tCWVTWscgobC-Fzb7NskDHF1qpKqoACaLvaqNp9I3C0lOKFpTAsBZzXbUSw/exec';
-  const APPS_SCRIPT_TOKEN = '10151991gpDB!?';
+  const APPS_SCRIPT_URL   = '';
+  const APPS_SCRIPT_TOKEN = 'change-me-to-a-secret';
 
 
   /* ---------- Contact number: digits only, exactly 11 ---------- */
