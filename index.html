@@ -26,7 +26,7 @@
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Caveat:wght@600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
 
   :root{
     --shell:#141416;
@@ -935,6 +935,197 @@
   .pay-manual-title{font-weight:600; font-size:14px; margin-bottom:10px; color:var(--cream);}
   .pay-manual img{display:block; width:100%; max-width:240px; margin:0 auto 12px; border-radius:10px; background:#fff;}
   .pay-manual ol{margin:0; padding-left:20px; font-size:13px; line-height:1.7; color:var(--cream);}
+
+  /* =====================================================================
+     APPLE HUMAN-INTERFACE LAYER
+     SF type, grouped-list forms, translucent materials, tinted buttons,
+     iOS sheets. Brand colours, themes, splash and all motion are retained.
+     The agreement document (#document / PDF) is intentionally untouched.
+     ===================================================================== */
+  :root{
+    --sf:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Inter","Helvetica Neue",system-ui,sans-serif;
+    --sep:rgba(255,255,255,.10);
+    --fill:rgba(255,255,255,.07);
+    --tint-bg:rgba(255,51,0,.14);
+    --ease-ios:cubic-bezier(.32,.72,0,1);
+  }
+  :root[data-theme="light"]{
+    --sep:rgba(60,45,20,.14);
+    --fill:rgba(60,45,20,.06);
+    --tint-bg:rgba(255,51,0,.10);
+  }
+  body{font-family:var(--sf); font-size:17px; letter-spacing:-.011em;}
+  body button, body input, body textarea, body select{font-family:var(--sf) !important;}
+  .field input[type=file]::file-selector-button{font-family:var(--sf) !important;}
+
+  /* ---------- Navigation bar (material) ---------- */
+  .topbar{
+    background:color-mix(in srgb, var(--shell) 72%, transparent);
+    backdrop-filter:saturate(1.8) blur(24px); -webkit-backdrop-filter:saturate(1.8) blur(24px);
+    border-bottom:.5px solid var(--sep);
+  }
+  .topbar::after{display:none;}
+  .brand h1{font-size:17px; font-weight:600; letter-spacing:-.022em;}
+  .brand h1 .logo{filter:drop-shadow(0 4px 10px rgba(255,51,0,.35));}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    font-size:17px; font-weight:600; letter-spacing:-.022em;
+    min-height:50px; padding:12px 20px; border-radius:14px; border:0;
+  }
+  .btn:hover{transform:none;}
+  .btn:active{transform:scale(.97); filter:brightness(.92);}
+  .btn-small{font-size:15px; min-height:32px; padding:5px 14px; border-radius:99px;}
+  .btn-primary{background:var(--jbl); box-shadow:none;}
+  .btn-primary:hover{box-shadow:none; filter:brightness(1.06);}
+  .btn-ghost{background:var(--tint-bg); color:var(--amber-bright); border:0;}
+  .btn-ghost:hover{background:rgba(255,51,0,.20); color:var(--amber-bright);}
+  .btn-share{background:var(--tint-bg); color:var(--amber-bright); border:0;}
+  .btn-share:hover{background:rgba(255,51,0,.20); color:var(--amber-bright);}
+  .btn-icon, #backBtn{background:var(--fill); color:var(--cream);}
+  .btn-icon:hover, #backBtn:hover{background:var(--sep); color:var(--cream);}
+  .btn-icon{width:38px; height:38px; min-height:38px; padding:0; border-radius:50%;}
+  .btn-icon svg{width:18px; height:18px;}
+  .btn-gcash, .btn-gcash-ico{border-radius:14px; font-size:17px;}
+  .btn-gcash{min-height:52px; box-shadow:none;}
+  .btn-gcash-ico{box-shadow:none;}
+
+  /* ---------- Progress ---------- */
+  .progress{border:0; border-radius:20px; box-shadow:0 0 0 .5px var(--sep);}
+  .progress-meta{font-size:15px;}
+  #progressLabel{font-weight:600; letter-spacing:-.022em;}
+  .progress-bar{height:4px; background:var(--fill);}
+  .progress-steps button{background:var(--fill); border-color:transparent; font-size:13px; font-weight:600;}
+  .progress-steps li:not(:last-child)::after{background:var(--fill);}
+  .step-label{font-size:15px;}
+
+  /* ---------- Step card + large title ---------- */
+  .step{
+    border:0; border-radius:22px;
+    box-shadow:0 0 0 .5px var(--sep), 0 18px 40px -26px rgba(0,0,0,.45);
+    animation-duration:.45s; animation-timing-function:var(--ease-ios);
+  }
+  .step-head{flex-direction:column; align-items:flex-start; gap:2px; margin-bottom:20px;}
+  .step-head .step-num{
+    width:auto; height:auto; padding:0; border:0; border-radius:0; background:none; display:block;
+    font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--amber-bright);
+  }
+  .step-head .step-num::before{content:"Step ";}
+  .step-head h2{font-size:28px; font-weight:700; letter-spacing:-.03em; line-height:1.12;}
+  @media (max-width:640px){ .step-head h2{font-size:25px;} }
+
+  /* ---------- Fields ---------- */
+  .field label{font-size:13px; font-weight:400; color:var(--muted); padding:0 4px; letter-spacing:-.006em;}
+  .field input:not([type=radio]):not([type=checkbox]):not([type=file]), .field textarea{
+    min-height:50px; font-size:17px; padding:12px 14px; border-radius:12px; letter-spacing:-.022em;
+  }
+  .field textarea{min-height:84px;}
+  .field input:focus, .field textarea:focus{box-shadow:0 0 0 3.5px rgba(255,51,0,.28);}
+  .field input[readonly], .field textarea[readonly]{border-style:solid;}
+  .hint{font-size:13px; padding:0 4px; line-height:1.4;}
+  .date-range-sep{font-size:15px;}
+  .static-note{font-size:14px; border-radius:12px; border-color:transparent; background:var(--fill); color:var(--muted);}
+  .field input[type=file]{border-style:solid; border-radius:12px; font-size:15px; padding:10px;}
+  .field input[type=file]::file-selector-button{border-radius:99px; padding:7px 14px; font-size:14px; font-weight:600;}
+  .upload-thumb img, .qr-cell img, .cond-thumb img{border-radius:14px;}
+
+  /* ---------- Grouped list: option rows ---------- */
+  .rate-options{
+    gap:0; margin-bottom:14px; overflow:hidden;
+    background:var(--field-bg); border:1px solid var(--shell-line); border-radius:14px;
+  }
+  .rate-opt{
+    min-height:52px; padding:13px 16px; font-size:17px; letter-spacing:-.022em;
+    border:0; border-top:.5px solid var(--sep); border-radius:0; background:transparent;
+  }
+  .rate-opt:first-child{border-top:0;}
+  .rate-opt:hover{transform:none; background:var(--fill); border-color:var(--sep);}
+  .rate-opt:first-child:hover{border-top:0;}
+  .rate-opt:has(input:checked){background:rgba(255,51,0,.08); box-shadow:none; border-color:var(--sep);}
+  .rate-opt .amt{font-weight:500; font-variant-numeric:tabular-nums;}
+  .rate-opt input{order:3; width:22px; height:22px; border:0; background:transparent; border-radius:0; margin-left:12px;}
+  .rate-opt:not(:has(.amt)) input{margin-left:auto;}
+  .rate-opt input::before{
+    width:13px; height:7px; border-radius:0; background:none; margin-top:-3px;
+    border-left:2.5px solid var(--jbl); border-bottom:2.5px solid var(--jbl);
+    transform:rotate(-45deg) scale(0);
+  }
+  .rate-opt input:checked::before{transform:rotate(-45deg) scale(1);}
+
+  /* ---------- Agreement rows: round check ---------- */
+  .field .agree-row{border-radius:14px; font-size:16px; padding:14px 16px;}
+  .field .agree-row input{width:24px; height:24px; min-width:24px; border-radius:50%;}
+
+  /* ---------- Totals ---------- */
+  .total-line{padding:12px 4px; border-top:.5px solid var(--sep);}
+  .total-line.main{margin-top:0; padding-top:14px;}
+  .total-line span:first-child{font-size:15px;}
+  .total-line span:last-child{font-size:17px; font-weight:600; font-variant-numeric:tabular-nums;}
+  .total-line.split span:last-child{font-size:17px;}
+
+  /* ---------- Notices ---------- */
+  .notice{border:0; border-radius:14px; font-size:14px; background:var(--tint-bg); padding:13px 15px;}
+  .notice-close{font-size:24px;}
+  .privacy-card{border-radius:16px; border-color:transparent; font-size:14px;}
+  .action-status{border-radius:14px; font-size:14px;}
+  .sig-error{border-radius:14px;}
+
+  /* ---------- Signature ---------- */
+  .sigpad-wrap{border-radius:16px;}
+
+  /* ---------- Bottom nav ---------- */
+  .wizard-nav{gap:10px;}
+  .wizard-nav .btn{min-height:52px; border-radius:14px;}
+  #backBtn{min-width:104px;}
+
+  /* ---------- Review ---------- */
+  .review-head h2{font-size:28px; font-weight:700; letter-spacing:-.03em;}
+  .review-head p{font-size:15px; line-height:1.45;}
+  .review-actions{gap:10px;}
+  .review-actions .action .btn{min-height:84px; border-radius:18px; font-size:13px; font-weight:500; letter-spacing:-.006em;}
+  .review-actions .action:first-child .btn{font-weight:600;}
+  .info-pop{
+    border-radius:14px; border:0; font-size:13px;
+    background:color-mix(in srgb, var(--shell-2) 80%, transparent);
+    backdrop-filter:saturate(1.8) blur(24px); -webkit-backdrop-filter:saturate(1.8) blur(24px);
+    box-shadow:0 0 0 .5px var(--sep), 0 16px 40px -12px rgba(0,0,0,.5);
+  }
+
+  /* ---------- Payment panel ---------- */
+  .pay-panel{border:0; border-radius:22px; box-shadow:0 0 0 .5px var(--sep); padding:20px 18px;}
+  .pay-head h3{font-size:22px; font-weight:700; letter-spacing:-.025em;}
+  .pay-head p{font-size:14px;}
+  .pay-total{border-radius:14px; border-color:transparent; background:var(--fill);}
+  .pay-total b{font-weight:700; letter-spacing:-.025em;}
+  .pay-manual{border-radius:16px; border-color:transparent; background:var(--fill);}
+  .pay-status{border-radius:12px;}
+
+  /* ---------- Sheets & overlays ---------- */
+  .terms-overlay{
+    background:rgba(0,0,0,.42);
+    backdrop-filter:blur(10px) saturate(1.2); -webkit-backdrop-filter:blur(10px) saturate(1.2);
+  }
+  .terms-box{border-radius:28px; box-shadow:0 30px 80px -10px rgba(0,0,0,.5);}
+  .privacy-doc{font-family:var(--sf);}
+  .privacy-doc h2{letter-spacing:-.025em;}
+  .privacy-doc h3{letter-spacing:.05em;}
+  .lightbox-overlay{
+    background:rgba(0,0,0,.8);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  }
+  .lightbox-overlay img{border-radius:14px;}
+  @keyframes sheetUp{from{transform:translateY(100%);}to{transform:none;}}
+  @media (max-width:640px){
+    .terms-overlay{align-items:flex-end; padding:0;}
+    .terms-box{max-width:none; border-radius:28px 28px 0 0; max-height:92vh;}
+    .terms-overlay.open .terms-box{animation:sheetUp .5s var(--ease-ios) both;}
+  }
+
+  /* ---------- Splash + misc ---------- */
+  .sp-title{letter-spacing:-.03em;}
+  .footer-note{font-size:13px;}
+  .form-panel::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb{background:var(--sep);}
 </style>
 </head>
 <body>
